@@ -14,7 +14,11 @@ void main() async {
 
   runApp(
     ChangeNotifierProvider(
-      create: (_) => ExpenseProvider(),
+      create: (_) {
+        final provider = ExpenseProvider();
+        provider.init();
+        return provider;
+      },
       child: const MyApp(),
     ),
   );
