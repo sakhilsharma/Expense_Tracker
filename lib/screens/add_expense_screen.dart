@@ -137,6 +137,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         title: const Text(
           'Add Expense',
           style: TextStyle(
+
             color: Colors.white,
             fontWeight: FontWeight.w700,
             fontSize: 20,
