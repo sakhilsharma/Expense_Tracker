@@ -1,24 +1,31 @@
+import 'package:expense_tracker/providers/theme_provider.dart';
+import 'package:expense_tracker/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import './utils/theme.dart';
-import './screens/dashboard_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import './services/storage_services.dart';
-import './providers/expense_provider.dart';
 import 'package:provider/provider.dart';
+
+import './providers/expense_provider.dart';
+import './services/storage_services.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //-->Prepare Flutter engine before using plugins.
-  await Hive.initFlutter();//takes time
-  //open expense box from hive--> locally stored
+
+  await Hive.initFlutter();
   await StorageService.openBox();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) {
-        final provider = ExpenseProvider();
-        provider.init();
-        return provider;
-      },
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) =>
+          ExpenseProvider()..init(),
+        ),
+
+        ChangeNotifierProvider(
+          create: (_) =>
+          ThemeProvider()..loadTheme(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
@@ -27,14 +34,24 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner:
-      false,
-      theme: AppTheme.darkTheme,
-      home: DashboardScreen(),
+    return Consumer<ThemeProvider>(
+      builder:
+          (context, themeProvider, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+
+          themeMode: themeProvider.isDark
+              ? ThemeMode.dark
+              : ThemeMode.light,
+
+          home: const HomeScreen(),
+        );
+      },
     );
   }
 }

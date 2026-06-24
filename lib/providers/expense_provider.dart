@@ -24,7 +24,6 @@ class ExpenseProvider
           Map<String,
               dynamic>.from(
               item));
-
       _expenses.add(expense);
     }
     notifyListeners();
@@ -35,7 +34,7 @@ class ExpenseProvider
       Expense expense) async {
 
     _expenses.add(expense);
-
+    //add data of expense to hive
     await _box.add(
         expense.toMap());
 

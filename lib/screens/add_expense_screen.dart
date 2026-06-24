@@ -398,8 +398,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
               const SizedBox(height: 36),
 
-              // ── Save Button ───────────────────────────
-              // ── Save Button ───────────────────────────
+
               GestureDetector(
                 onTap: () async {
                   await saveExpense();

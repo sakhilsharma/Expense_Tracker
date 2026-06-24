@@ -1,3 +1,4 @@
+import 'package:expense_tracker/providers/theme_provider.dart';
 import 'package:expense_tracker/screens/add_expense_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,28 +19,63 @@ class DashboardScreen extends StatelessWidget {
     const totalIncome = 50000;
     final balance = totalIncome - totalExpense;
 
+    final expensePercentage =
+    totalIncome == 0
+        ? 0
+        : ((totalExpense /
+        totalIncome) *
+        100)
+        .round();
+
+    final theme =
+    Theme.of(context);
+
+    final colors =
+        theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0F0E17),
+      backgroundColor:
+      theme.scaffoldBackgroundColor,
 
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'ExpenseFlow',
           style: TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 22,
-            color: Colors.white,
+            color: colors.onSurface,
             letterSpacing: 0.5,
           ),
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              final themeProvider =
+              context.read<ThemeProvider>();
+
+              themeProvider.toggleTheme(
+                !themeProvider.isDark,
+              );
+            },
+            icon: Icon(
+              context.watch<ThemeProvider>().isDark
+                  ? Icons.light_mode_rounded
+                  : Icons.dark_mode_rounded,
+              color: colors.onSurface,
+            ),
+          ),
+
           Padding(
-            padding: const EdgeInsets.only(right: 16),
+            padding:
+            const EdgeInsets.only(right: 16),
             child: CircleAvatar(
               radius: 18,
-              backgroundColor: const Color(0xFF6C63FF).withValues(alpha: 0.2),
+              backgroundColor:
+              const Color(0xFF6C63FF)
+                  .withValues(alpha: 0.2),
               child: const Icon(
                 Icons.person_outline_rounded,
                 color: Color(0xFF6C63FF),
@@ -193,7 +229,7 @@ class DashboardScreen extends StatelessWidget {
                     amount: '₹$totalExpense',
                     icon: Icons.arrow_upward_rounded,
                     accentColor: const Color(0xFFFF4D6D),
-                    trend: '${((totalExpense / totalIncome) * 100).toStringAsFixed(0)}%',
+                    trend: '$expensePercentage%',
                     isPositiveTrend: false,
                   ),
                 ),
@@ -206,12 +242,14 @@ class DashboardScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Recent Transactions',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color:
+                    colors.onSurface
+                        .withValues(alpha: 0.6),
                     letterSpacing: 0.2,
                   ),
                 ),
@@ -219,7 +257,9 @@ class DashboardScreen extends StatelessWidget {
                   '${expenses.length} total',
                   style: TextStyle(
                     fontSize: 13,
-                    color: const Color(0xFFFFFFFF).withValues(alpha: 0.4),
+                    color:
+                    colors.onSurface
+                        .withValues(alpha: 0.5),
                   ),
                 ),
               ],
@@ -237,7 +277,8 @@ class DashboardScreen extends StatelessWidget {
                     Icon(
                       Icons.receipt_long_rounded,
                       size: 56,
-                      color: const Color(0xFFFFFFFF).withValues(alpha: 0.15),
+                      color: colors.onSurface
+                          .withValues(alpha: 0.6),
                     ),
                     const SizedBox(height: 14),
                     Text(
@@ -245,7 +286,8 @@ class DashboardScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFFFFFFFF).withValues(alpha: 0.3),
+                        color: colors.onSurface
+                            .withValues(alpha: 0.6),
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -253,7 +295,9 @@ class DashboardScreen extends StatelessWidget {
                       'Tap + to add your first one',
                       style: TextStyle(
                         fontSize: 13,
-                        color: const Color(0xFFFFFFFF).withValues(alpha: 0.2),
+                        color:
+                        colors.onSurface
+                            .withValues(alpha: 0.2),
                       ),
                     ),
                   ],
@@ -322,10 +366,10 @@ class DashboardScreen extends StatelessWidget {
                         vertical: 14,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E1E2E),
+                        color: theme.cardColor,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: const Color(0xFFFFFFFF).withValues(alpha: 0.06),
+                          color: colors.onSurface.withValues(alpha: 0.08),
                         ),
                       ),
                       child: Row(
@@ -352,8 +396,8 @@ class DashboardScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   expense.title,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: colors.onSurface,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 15,
                                   ),
@@ -362,7 +406,7 @@ class DashboardScreen extends StatelessWidget {
                                 Text(
                                   expense.category,
                                   style: TextStyle(
-                                    color: const Color(0xFFFFFFFF).withValues(alpha: 0.4),
+                                    color: colors.onSurface.withValues(alpha: 0.5),
                                     fontSize: 12,
                                   ),
                                 ),
