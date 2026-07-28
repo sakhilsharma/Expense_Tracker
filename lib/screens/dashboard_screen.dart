@@ -1,4 +1,5 @@
 import 'package:expense_tracker/providers/theme_provider.dart';
+import 'package:expense_tracker/screens/ProfilePage.dart';
 import 'package:expense_tracker/screens/add_expense_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,29 +14,23 @@ class DashboardScreen extends StatelessWidget {
     final provider = context.watch<ExpenseProvider>();
     final expenses = provider.expenses;
 
-    final totalExpense = expenses.fold(0,
-          (sum, expense) => sum + expense.amount,
+    final totalExpense = expenses.fold(
+      0,
+      (sum, expense) => sum + expense.amount,
     );
     const totalIncome = 50000;
     final balance = totalIncome - totalExpense;
 
-    final expensePercentage =
-    totalIncome == 0
+    final expensePercentage = totalIncome == 0
         ? 0
-        : ((totalExpense /
-        totalIncome) *
-        100)
-        .round();
+        : ((totalExpense / totalIncome) * 100).round();
 
-    final theme =
-    Theme.of(context);
+    final theme = Theme.of(context);
 
-    final colors =
-        theme.colorScheme;
+    final colors = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor:
-      theme.scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
 
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -53,12 +48,9 @@ class DashboardScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              final themeProvider =
-              context.read<ThemeProvider>();
+              final themeProvider = context.read<ThemeProvider>();
 
-              themeProvider.toggleTheme(
-                !themeProvider.isDark,
-              );
+              themeProvider.toggleTheme(!themeProvider.isDark);
             },
             icon: Icon(
               context.watch<ThemeProvider>().isDark
@@ -69,17 +61,25 @@ class DashboardScreen extends StatelessWidget {
           ),
 
           Padding(
-            padding:
-            const EdgeInsets.only(right: 16),
-            child: CircleAvatar(
-              radius: 18,
-              backgroundColor:
-              const Color(0xFF6C63FF)
-                  .withValues(alpha: 0.2),
-              child: const Icon(
-                Icons.person_outline_rounded,
-                color: Color(0xFF6C63FF),
-                size: 20,
+            padding: const EdgeInsets.only(right: 16),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileScreen(),
+                  ),
+                );
+              },
+              child: CircleAvatar(
+                radius: 18,
+                backgroundColor: const Color(0xFF6C63FF).withValues(alpha: 0.2),
+                child: const Icon(
+                  Icons.person_outline_rounded,
+                  color: Color(0xFF6C63FF),
+                  size: 20,
+                ),
               ),
             ),
           ),
@@ -106,9 +106,7 @@ class DashboardScreen extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const AddExpenseScreen(),
-              ),
+              MaterialPageRoute(builder: (context) => const AddExpenseScreen()),
             );
           },
           child: const Icon(Icons.add_rounded, size: 28, color: Colors.white),
@@ -120,7 +118,6 @@ class DashboardScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // ── Balance Card ──────────────────────────────
             Container(
               width: double.infinity,
@@ -169,7 +166,9 @@ class DashboardScreen extends StatelessWidget {
                           Text(
                             'CURRENT BALANCE',
                             style: TextStyle(
-                              color: const Color(0xFFFFFFFF).withValues(alpha: 0.7),
+                              color: const Color(
+                                0xFFFFFFFF,
+                              ).withValues(alpha: 0.7),
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 1.5,
@@ -247,9 +246,7 @@ class DashboardScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color:
-                    colors.onSurface
-                        .withValues(alpha: 0.6),
+                    color: colors.onSurface.withValues(alpha: 0.6),
                     letterSpacing: 0.2,
                   ),
                 ),
@@ -257,9 +254,7 @@ class DashboardScreen extends StatelessWidget {
                   '${expenses.length} total',
                   style: TextStyle(
                     fontSize: 13,
-                    color:
-                    colors.onSurface
-                        .withValues(alpha: 0.5),
+                    color: colors.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
               ],
@@ -271,165 +266,174 @@ class DashboardScreen extends StatelessWidget {
             Expanded(
               child: expenses.isEmpty
                   ? Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.receipt_long_rounded,
-                      size: 56,
-                      color: colors.onSurface
-                          .withValues(alpha: 0.6),
-                    ),
-                    const SizedBox(height: 14),
-                    Text(
-                      'No expenses yet',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        color: colors.onSurface
-                            .withValues(alpha: 0.6),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.receipt_long_rounded,
+                            size: 56,
+                            color: colors.onSurface.withValues(alpha: 0.6),
+                          ),
+                          const SizedBox(height: 14),
+                          Text(
+                            'No expenses yet',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                              color: colors.onSurface.withValues(alpha: 0.6),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Tap + to add your first one',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: colors.onSurface.withValues(alpha: 0.2),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Tap + to add your first one',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color:
-                        colors.onSurface
-                            .withValues(alpha: 0.2),
-                      ),
-                    ),
-                  ],
-                ),
-              )
+                    )
                   : ListView.builder(
-                itemCount: expenses.length,
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) {
-                  final expense = expenses[index];
+                      itemCount: expenses.length,
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (context, index) {
+                        final expense = expenses[index];
 
-                  return Dismissible(
-                    key: ValueKey(expense.date.toString() + expense.title),
-                    direction: DismissDirection.endToStart,
-                    background: Container(
-                      alignment: Alignment.centerRight,
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.only(right: 24),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFF4D6D).withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: const Color(0xFFFF4D6D).withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.delete_outline_rounded,
-                        color: Color(0xFFFF4D6D),
-                        size: 24,
-                      ),
-                    ),
-                    onDismissed: (_) {
-                      context.read<ExpenseProvider>().deleteExpense(index);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Row(
-                            children: [
-                              const Icon(
-                                Icons.delete_outline_rounded,
-                                color: Color(0xFFFF4D6D),
-                                size: 18,
+                        return Dismissible(
+                          key: ValueKey(
+                            expense.date.toString() + expense.title,
+                          ),
+                          direction: DismissDirection.endToStart,
+                          background: Container(
+                            alignment: Alignment.centerRight,
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.only(right: 24),
+                            decoration: BoxDecoration(
+                              color: const Color(
+                                0xFFFF4D6D,
+                              ).withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: const Color(
+                                  0xFFFF4D6D,
+                                ).withValues(alpha: 0.3),
                               ),
-                              const SizedBox(width: 10),
-                              Text(
-                                '${expense.title} deleted',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
+                            ),
+                            child: const Icon(
+                              Icons.delete_outline_rounded,
+                              color: Color(0xFFFF4D6D),
+                              size: 24,
+                            ),
+                          ),
+                          onDismissed: (_) {
+                            context.read<ExpenseProvider>().deleteExpense(
+                              index,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.delete_outline_rounded,
+                                      color: Color(0xFFFF4D6D),
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      '${expense.title} deleted',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                backgroundColor: const Color(0xFF2A2A3E),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
                                 ),
                               ),
-                            ],
-                          ),
-                          backgroundColor: const Color(0xFF2A2A3E),
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.cardColor,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: colors.onSurface.withValues(alpha: 0.08),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          // Icon
-                          Container(
-                            padding: const EdgeInsets.all(10),
+                            );
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF6C63FF).withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(14),
+                              color: theme.cardColor,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: colors.onSurface.withValues(alpha: 0.08),
+                              ),
                             ),
-                            child: Icon(
-                              getCategoryIcon(expense.category),
-                              color: const Color(0xFF6C63FF),
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(width: 14),
-
-                          // Title + category
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
                               children: [
-                                Text(
-                                  expense.title,
-                                  style: TextStyle(
-                                    color: colors.onSurface,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15,
+                                // Icon
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: const Color(
+                                      0xFF6C63FF,
+                                    ).withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Icon(
+                                    getCategoryIcon(expense.category),
+                                    color: const Color(0xFF6C63FF),
+                                    size: 20,
                                   ),
                                 ),
-                                const SizedBox(height: 3),
+                                const SizedBox(width: 14),
+
+                                // Title + category
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        expense.title,
+                                        style: TextStyle(
+                                          color: colors.onSurface,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 3),
+                                      Text(
+                                        expense.category,
+                                        style: TextStyle(
+                                          color: colors.onSurface.withValues(
+                                            alpha: 0.5,
+                                          ),
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // Amount
                                 Text(
-                                  expense.category,
-                                  style: TextStyle(
-                                    color: colors.onSurface.withValues(alpha: 0.5),
-                                    fontSize: 12,
+                                  '−₹${expense.amount}',
+                                  style: const TextStyle(
+                                    color: Color(0xFFFF4D6D),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 15,
+                                    letterSpacing: -0.3,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-
-                          // Amount
-                          Text(
-                            '−₹${expense.amount}',
-                            style: const TextStyle(
-                              color: Color(0xFFFF4D6D),
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
-                              letterSpacing: -0.3,
-                            ),
-                          ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),
@@ -440,12 +444,19 @@ class DashboardScreen extends StatelessWidget {
 
 IconData getCategoryIcon(String category) {
   switch (category) {
-    case 'Food':       return Icons.restaurant_rounded;
-    case 'Shopping':   return Icons.shopping_bag_rounded;
-    case 'Transport':  return Icons.directions_car_rounded;
-    case 'Entertainment': return Icons.movie_rounded;
-    case 'Health':     return Icons.medical_services_rounded;
-    case 'Education':  return Icons.school_rounded;
-    default:           return Icons.receipt_rounded;
+    case 'Food':
+      return Icons.restaurant_rounded;
+    case 'Shopping':
+      return Icons.shopping_bag_rounded;
+    case 'Transport':
+      return Icons.directions_car_rounded;
+    case 'Entertainment':
+      return Icons.movie_rounded;
+    case 'Health':
+      return Icons.medical_services_rounded;
+    case 'Education':
+      return Icons.school_rounded;
+    default:
+      return Icons.receipt_rounded;
   }
 }
