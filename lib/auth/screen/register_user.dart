@@ -1,5 +1,6 @@
 import 'package:expense_tracker/auth/Providers/auth_service.dart';
 import 'package:expense_tracker/auth/screen/login_screen.dart';
+import 'package:expense_tracker/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -36,9 +37,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
-      await AuthService().register(
+      UserCredential credential = await AuthService().register(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
+      );
+
+      User user = credential.user!;
+
+      ///store the registered user as into firestore--also
+      await FirestoreService().createUser(
+        uid: user.uid,
+        name: nameController.text.trim(),
+        email: user.email!,
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -47,7 +57,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen())
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
