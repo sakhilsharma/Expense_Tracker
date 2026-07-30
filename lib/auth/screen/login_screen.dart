@@ -34,17 +34,17 @@ class _LoginScreenState extends State<LoginScreen> {
     final auth = AuthService();
 
     try {
-     
-     await auth.login(
+      await auth.login(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
- //on success full login fireauth returns object-> UserCredentials
- //method->>User? user = FirebaseAuth.instance.currentUser;
-      Navigator.pushReplacement(
-        (context),
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+      //on success full login fireauth returns object-> UserCredentials
+      //method->>User? user = FirebaseAuth.instance.currentUser;
+      // Navigator.pushReplacement(
+      //   (context),
+      //   MaterialPageRoute(builder: (context) => HomeScreen()),
+      // );
+      //no required as such we have used authstateChanges()--> handles it
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'user-not-found':
