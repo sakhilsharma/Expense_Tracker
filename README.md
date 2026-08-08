@@ -1,8 +1,17 @@
-# Expense Tracker
+# expense_tracker
 
-A Flutter-based expense tracking application built with **Flutter, Firebase Authentication, Cloud Firestore, and Provider**.
-
+A new Flutter project.
 ## Screenshots
+
+<p align="center">
+  <img src="screenshots/home.png" width="220"/>
+  <img src="screenshots/add_expense.png" width="220"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/chart1.png" width="220"/>
+  <img src="screenshots/chart2.png" width="220"/>
+</p>
 
 <!-- Add your application screenshots here -->
 
