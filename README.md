@@ -12,7 +12,27 @@ A new Flutter project.
   <img src="screenshots/chart1.png" width="220"/>
   <img src="screenshots/chart2.png" width="220"/>
 </p>
-
+## Flow Chart
+                    EXPENSE TRACKER
+                          │
+        ┌─────────────────┴─────────────────┐
+        │                                   │
+     Firebase Auth                     Firestore
+        │                                   │
+   ┌────┴────┐                      ┌───────┴────────┐
+   │         │                      │                │
+Register   Login                  CRUD            Queries
+   │         │                      │                │
+   └────┬────┘                      │                │
+        │                           │                │
+   currentUser.uid                 │          monthly expenses
+        │                           │          category filtering
+        └───────────┬───────────────┘
+                    │
+                 Provider
+                    │
+                    ▼
+                    UI
 ## Getting Started
 
 This project is a starting point for a Flutter application.
