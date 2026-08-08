@@ -13,17 +13,17 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<ExpenseProvider>();
     final expenses = provider.expenses;
+    // print("Expense count: ${expenses.length}");
 
-    final totalExpense = expenses.fold(
-      0,
-      (sum, expense) => sum + expense.amount,
-    );
+    // for (int i = 0; i < expenses.length; i++) {
+    //   print(expenses[i].title);
+    // }
     const totalIncome = 50000;
-    final balance = totalIncome - totalExpense;
+    final balance = totalIncome - provider.totalExpense;
 
     final expensePercentage = totalIncome == 0
         ? 0
-        : ((totalExpense / totalIncome) * 100).round();
+        : ((provider.totalExpense / totalIncome) * 100).round();
 
     final theme = Theme.of(context);
 
@@ -225,7 +225,7 @@ class DashboardScreen extends StatelessWidget {
                 Expanded(
                   child: SummaryCard(
                     title: 'Expenses',
-                    amount: '₹$totalExpense',
+                    amount: '₹${provider.totalExpense}',
                     icon: Icons.arrow_upward_rounded,
                     accentColor: const Color(0xFFFF4D6D),
                     trend: '$expensePercentage%',
@@ -264,7 +264,9 @@ class DashboardScreen extends StatelessWidget {
 
             // ── Transaction List ──────────────────────────
             Expanded(
-              child: expenses.isEmpty
+              child: provider.loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : expenses.isEmpty
                   ? Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -302,7 +304,6 @@ class DashboardScreen extends StatelessWidget {
 
                         return Dismissible(
                           key: ValueKey(expense.id),
-
                           direction: DismissDirection.endToStart,
 
                           background: Container(
@@ -376,7 +377,6 @@ class DashboardScreen extends StatelessWidget {
                             ),
                             child: Row(
                               children: [
-                                // Icon
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
@@ -394,7 +394,6 @@ class DashboardScreen extends StatelessWidget {
 
                                 const SizedBox(width: 14),
 
-                                // Title + category
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -422,7 +421,6 @@ class DashboardScreen extends StatelessWidget {
                                   ),
                                 ),
 
-                                // Amount
                                 Text(
                                   '−₹${expense.amount}',
                                   style: const TextStyle(

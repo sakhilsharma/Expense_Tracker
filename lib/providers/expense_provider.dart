@@ -17,6 +17,10 @@ class ExpenseProvider extends ChangeNotifier {
   bool get loading => _loading;
   String? get error => _error;
   List<Expense> get expenses => _expenses;
+  //calc total expenses 
+  int get totalExpense {
+    return _expenses.fold(0, (sum, expense) => sum + expense.amount);
+  }
 
   // ADD
   Future<void> addExpense(Expense expense) async {

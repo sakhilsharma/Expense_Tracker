@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,13 +21,13 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   DateTime selectedDate = DateTime.now();
 
   final List<Map<String, dynamic>> categories = [
-    {'label': 'Food',          'icon': Icons.restaurant_rounded},
-    {'label': 'Shopping',      'icon': Icons.shopping_bag_rounded},
-    {'label': 'Transport',     'icon': Icons.directions_car_rounded},
+    {'label': 'Food', 'icon': Icons.restaurant_rounded},
+    {'label': 'Shopping', 'icon': Icons.shopping_bag_rounded},
+    {'label': 'Transport', 'icon': Icons.directions_car_rounded},
     {'label': 'Entertainment', 'icon': Icons.movie_rounded},
-    {'label': 'Health',        'icon': Icons.medical_services_rounded},
-    {'label': 'Education',     'icon': Icons.school_rounded},
-    {'label': 'Other',         'icon': Icons.receipt_rounded},
+    {'label': 'Health', 'icon': Icons.medical_services_rounded},
+    {'label': 'Education', 'icon': Icons.school_rounded},
+    {'label': 'Other', 'icon': Icons.receipt_rounded},
   ];
 
   Future<void> pickDate() async {
@@ -50,20 +49,41 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     if (pickedDate != null) setState(() => selectedDate = pickedDate);
   }
 
+  bool _saving = false;
   Future<void> saveExpense() async {
     if (!_formKey.currentState!.validate()) return;
 
+    setState(() {
+      _saving = true;
+    });
+
     final expense = Expense(
       title: titleController.text.trim(),
-      amount: int.parse(amountController.text),
+      amount: int.parse(amountController.text.trim()),
       category: selectedCategory,
       date: selectedDate,
       note: noteController.text.trim(),
     );
 
-    await context.read<ExpenseProvider>().addExpense(expense);
-    if (!mounted) return;
-    Navigator.pop(context);
+    try {
+      await context.read<ExpenseProvider>().addExpense(expense);
+
+      if (!mounted) return;
+
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to add expense: $e')));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _saving = false;
+        });
+      }
+    }
   }
 
   @override
@@ -137,7 +157,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         title: const Text(
           'Add Expense',
           style: TextStyle(
-
             color: Colors.white,
             fontWeight: FontWeight.w700,
             fontSize: 20,
@@ -152,11 +171,13 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               // ── Amount Hero Input ──────────────────────
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 24),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 28,
+                  horizontal: 24,
+                ),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
@@ -211,7 +232,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                             decoration: InputDecoration(
                               hintText: '0',
                               hintStyle: TextStyle(
-                                color: const Color(0xFFFFFFFF).withValues(alpha: 0.3),
+                                color: const Color(
+                                  0xFFFFFFFF,
+                                ).withValues(alpha: 0.3),
                                 fontSize: 42,
                                 fontWeight: FontWeight.w800,
                               ),
@@ -251,7 +274,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 style: const TextStyle(color: Colors.white),
                 decoration: _inputDecoration('Title', Icons.edit_outlined),
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) return 'Enter title';
+                  if (value == null || value.trim().isEmpty)
+                    return 'Enter title';
                   return null;
                 },
               ),
@@ -263,7 +287,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 controller: noteController,
                 style: const TextStyle(color: Colors.white),
                 maxLines: 3,
-                decoration: _inputDecoration('Notes (Optional)', Icons.notes_rounded),
+                decoration: _inputDecoration(
+                  'Notes (Optional)',
+                  Icons.notes_rounded,
+                ),
               ),
 
               const SizedBox(height: 28),
@@ -278,10 +305,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 children: categories.map((cat) {
                   final isSelected = selectedCategory == cat['label'];
                   return GestureDetector(
-                    onTap: () => setState(() => selectedCategory = cat['label']),
+                    onTap: () =>
+                        setState(() => selectedCategory = cat['label']),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? const Color(0xFF6C63FF)
@@ -295,12 +326,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         ),
                         boxShadow: isSelected
                             ? [
-                          BoxShadow(
-                            color: const Color(0xFF6C63FF).withValues(alpha: 0.35),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
+                                BoxShadow(
+                                  color: const Color(
+                                    0xFF6C63FF,
+                                  ).withValues(alpha: 0.35),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ]
                             : [],
                       ),
                       child: Row(
@@ -311,7 +344,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                             size: 16,
                             color: isSelected
                                 ? Colors.white
-                                : const Color(0xFFFFFFFF).withValues(alpha: 0.4),
+                                : const Color(
+                                    0xFFFFFFFF,
+                                  ).withValues(alpha: 0.4),
                           ),
                           const SizedBox(width: 7),
                           Text(
@@ -319,7 +354,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                             style: TextStyle(
                               color: isSelected
                                   ? Colors.white
-                                  : const Color(0xFFFFFFFF).withValues(alpha: 0.5),
+                                  : const Color(
+                                      0xFFFFFFFF,
+                                    ).withValues(alpha: 0.5),
                               fontWeight: isSelected
                                   ? FontWeight.w700
                                   : FontWeight.w500,
@@ -342,7 +379,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               GestureDetector(
                 onTap: pickDate,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF1E1E2E),
                     borderRadius: BorderRadius.circular(16),
@@ -355,7 +395,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF6C63FF).withValues(alpha: 0.15),
+                          color: const Color(
+                            0xFF6C63FF,
+                          ).withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(
@@ -371,7 +413,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                           Text(
                             'Selected Date',
                             style: TextStyle(
-                              color: const Color(0xFFFFFFFF).withValues(alpha: 0.4),
+                              color: const Color(
+                                0xFFFFFFFF,
+                              ).withValues(alpha: 0.4),
                               fontSize: 11,
                               letterSpacing: 0.5,
                             ),
@@ -399,11 +443,12 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
               const SizedBox(height: 36),
 
-
               GestureDetector(
-                onTap: () async {
-                  await saveExpense();
-                },
+                onTap: _saving
+                    ? null
+                    : () async {
+                        await saveExpense();
+                      },
                 child: Container(
                   height: 58,
                   alignment: Alignment.center,
@@ -420,23 +465,37 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       ),
                     ],
                   ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.check_circle_outline_rounded,
-                          color: Colors.white, size: 20),
-                      SizedBox(width: 10),
-                      Text(
-                        'Save Expense',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.5,
+                  child: _saving
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        )
+                      : const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.check_circle_outline_rounded,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Save Expense',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
                 ),
               ),
 
