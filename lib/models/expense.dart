@@ -3,20 +3,27 @@
 // data layer — they define the shape and behavior of everything your app works with.
 //instead of raw data--> better is to use strongly typed objects
 class Expense {
+  final String? id;
   final String title;
   final int amount;
   final String category;
   final DateTime date;
   final String note;
-//contructor
+  //contructor
   Expense({
+    this.id,
     required this.title,
     required this.amount,
     required this.category,
     required this.date,
     required this.note,
   });
-//serilaization
+  //serilaization:
+  // Firestore doesn't understand Dart objects
+  // It only understands Map<String, dynamic>
+
+  //.add(...)--->
+  // Firestore automatically generates a random document ID
   Map<String, dynamic> toMap() {
     return {
       'title': title,
@@ -26,20 +33,22 @@ class Expense {
       'note': note,
     };
   }
-//factory contructor
-  factory Expense.fromMap(
-      Map<String, dynamic> map) {
+
+  //factory contructor
+  //--> id makes it easier to locate documnet
+  factory Expense.fromMap(Map<String, dynamic> map, String documentId) {
     return Expense(
+      id: documentId,
       title: map['title'],
       amount: map['amount'],
       category: map['category'],
-      date: DateTime.parse(
-        map['date'],
-      ),
+      date: DateTime.parse(map['date']),
       note: map['note'],
     );
   }
 }
+
+
 //Serialization--->
 //hive(local storage)--> do not unserstand the objects it wants int bool map list etx
 //serialiaztion is-->converting expense --> map --> (to get stored in) hive

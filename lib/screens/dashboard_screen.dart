@@ -301,10 +301,10 @@ class DashboardScreen extends StatelessWidget {
                         final expense = expenses[index];
 
                         return Dismissible(
-                          key: ValueKey(
-                            expense.date.toString() + expense.title,
-                          ),
+                          key: ValueKey(expense.id),
+
                           direction: DismissDirection.endToStart,
+
                           background: Container(
                             alignment: Alignment.centerRight,
                             margin: const EdgeInsets.only(bottom: 12),
@@ -326,10 +326,12 @@ class DashboardScreen extends StatelessWidget {
                               size: 24,
                             ),
                           ),
+
                           onDismissed: (_) {
                             context.read<ExpenseProvider>().deleteExpense(
-                              index,
+                              expense.id!,
                             );
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Row(
@@ -358,6 +360,7 @@ class DashboardScreen extends StatelessWidget {
                               ),
                             );
                           },
+
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 12),
                             padding: const EdgeInsets.symmetric(
@@ -388,6 +391,7 @@ class DashboardScreen extends StatelessWidget {
                                     size: 20,
                                   ),
                                 ),
+
                                 const SizedBox(width: 14),
 
                                 // Title + category

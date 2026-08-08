@@ -6,7 +6,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import './providers/expense_provider.dart';
+import 'providers/expense_provider.dart';
+import 'repository/expense_repository.dart';
 import './services/storage_services.dart';
 //import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,7 +16,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Think of Firebase.initializeApp() as opening the connection to your Firebase project.
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await Hive.initFlutter();
@@ -24,9 +24,11 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ExpenseProvider()..init()),
+        ChangeNotifierProvider(
+          create: (_) => ExpenseProvider(ExpenseRepository()),
+        ),
 
-        ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: const MyApp(),
     ),
